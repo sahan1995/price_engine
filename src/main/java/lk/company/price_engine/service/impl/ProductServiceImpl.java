@@ -32,10 +32,13 @@ public class ProductServiceImpl implements ProductService {
             ProductDTO productDTO = new ProductDTO();
             BeanUtils.copyProperties(product, productDTO);
             ArrayList<ProductUnitPrice> productUnitPrices = new ArrayList<>();
-            for ( int unit = 1; unit <=productUnits ; unit++ ) {
-                productUnitPrices.add( new ProductUnitPrice( unit , product.getPerUnitPrice() * unit ));
+            if (productUnits >0 ) {
+                for ( int unit = 1; unit <=productUnits ; unit++ ) {
+                    productUnitPrices.add( new ProductUnitPrice( unit , product.getPerUnitPrice() * unit ));
+                }
+                productDTO.setProductUnitPrices( productUnitPrices );
             }
-            productDTO.setProductUnitPrices( productUnitPrices );
+
             productDTOS.add( productDTO );
         }));
         return productDTOS;

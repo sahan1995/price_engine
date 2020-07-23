@@ -23,6 +23,6 @@ public class Product {
 
     private double units_per_cartoon;
 
-    @Formula( value = "(cartoon_price / units_per_cartoon ) * 1.3 ")
+    @Formula( value = "(cartoon_price / units_per_cartoon ) * 0.3 ")
     private double perUnitPrice;
 }
