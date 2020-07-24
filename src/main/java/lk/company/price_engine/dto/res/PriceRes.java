@@ -14,4 +14,10 @@ public class PriceRes {
 
     private List<LineItems> lineItems;
 
+    private double discount;
+
+    private double subtotal;
+
+    private double total;
+
 }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,7 +28,8 @@ public class PriceServiceImpl implements PriceService {
 
         ArrayList<LineItems> lineItems = new ArrayList<>();
 
-//        double discountAmount = 0.00;
+        HashMap<Integer, Double> discountProducts = new HashMap<>();
+
 
         Set<Integer> productIds = productReqList.stream().map(productReq -> productReq.getId())
                 .collect((Collectors.toSet()));
@@ -41,7 +43,12 @@ public class PriceServiceImpl implements PriceService {
                         .map(product -> product.getCartoon_price())
                         .collect(Collectors.toList()).get(0);
 
+                if ( cartoonProducts.getQty() >= 3 ) {
+                    discountProducts.put(cartoonProducts.getId(), cartoon_price );
+                }
+
                 lineItems.add( new LineItems( cartoonProducts.getIndex(), cartoonProducts.getQty() * cartoon_price ));
+
             } else {
                 Product product = allById.stream().filter((p -> p.getID() == cartoonProducts.getId()))
                         .collect(Collectors.toList()).get(0);
@@ -63,9 +70,16 @@ public class PriceServiceImpl implements PriceService {
 
         });
 
+        double discountAmount  = discountProducts.values().stream().map(catoon_price -> (0.1 * catoon_price) ).reduce(0.00, Double::sum );
+
+        Double total = lineItems.stream().map(lineItem -> lineItem.getSub_total()).reduce(0.00, Double::sum);
 
 
+        priceRes.setDiscount(discountAmount);
 
+        priceRes.setSubtotal(total);
+
+        priceRes.setTotal( total - discountAmount );
 
         priceRes.setLineItems(lineItems);
 
